@@ -234,12 +234,14 @@ main > h2 i:nth-child(2) {
    margin-bottom: 20px;
 }
 
-.window #back-icon {
+.window #back-icon,
+.second-main #back-icon {
    background-color: var(--primary-red);
    border-radius: 50%;
    padding: 10px;
    display: inline-block;
    cursor: pointer;
+   z-index: 10;
 }
 
 #back-icon > img{
@@ -264,6 +266,7 @@ main > h2 i:nth-child(2) {
 
 #second-main {
    padding: 3rem;
+   text-align: center;
 }
 
 .details-group > .timer {
@@ -273,4 +276,16 @@ main > h2 i:nth-child(2) {
 .details-group > .timer i.icone,
 .details-group > .avaiation i.icone {
    padding: 0 5px;
+}
+.second-main > .back-div {
+   margin-top: -30px;
+   padding: 10px 0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.h2-searched {
+   padding: 10px 0;
+   font-size: 2rem;
 }

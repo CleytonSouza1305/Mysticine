@@ -23,40 +23,73 @@ function getPopularMovies() {
        .then(response => response.json())
        .then(data => {
          const dados = data.results
-         const img = document.querySelectorAll('.image')
-         const h2 = document.querySelectorAll('.text-title')
-         const cards = document.querySelectorAll('.card')
-         const timers = document.querySelectorAll('.time-details')
-         const estrelas = document.querySelectorAll('.avaliation')
-         const buttons = document.querySelectorAll('.btn-details')
+
+         const Container = document.querySelector('.container') 
+         const containerGroup = document.createElement('div')
 
          for (let i = 0; i < dados.length; i++) {
-            const image = img[i]
-            const title = h2[i]
-            const card = cards[i]
-            const time = timers[i]
-            const estrela = estrelas[i]
-            const botao = buttons[i]
+
+            const h2 = document.createElement('h2')
+            const card = document.createElement('div')
+            card.className = 'card'
+            const img = document.createElement('img')
+            img.className = 'image'
+            h2.className = 'text-title'
+            img.src = `https://image.tmdb.org/t/p/w500/${dados[i].poster_path}`
+            img.alt = 'Imagem não encontrada'
+            h2.innerHTML = dados[i].title
+
+            const timer = document.createElement('div')
+            timer.className = 'timer'
+            const icone = document.createElement('i')
+            icone.className = 'fa-solid fa-clock icone'
+            const span = document.createElement('span')
+            span.className = 'time-details'
+            const button = document.createElement('button')
+            button.className = 'btn-details'
+            button.innerHTML = 'DETALHES'
+            
+            const avaiationDiv = document.createElement('div')
+            avaiationDiv.className = 'avaiation'
+            const avaliationSpan = document.createElement('span')
+            avaliationSpan.className = 'avaliation'
+            avaliationSpan
+            const iAvaliation = document.createElement('i')
+            iAvaliation.className = 'fa-solid fa-star icone'
+            
+            const avaliationTime = dados[i].vote_average
+            const stars = converterStars(avaliationTime)
+            avaliationSpan.innerHTML = stars
+            avaiationDiv.append(avaliationSpan, iAvaliation)
+
+            timer.append(icone, span)
+            const detailsGroup = document.createElement('div')
+            detailsGroup.className = 'details-group'
+            detailsGroup.append(timer, button, avaiationDiv)
+
+
+            card.append(img, h2, detailsGroup)
+           
+            containerGroup.className = 'container-group'
+            containerGroup.append(card)
+            
 
             if (dados[i].poster_path) {
-               image.src = `https://image.tmdb.org/t/p/w500/${dados[i].poster_path}`
-               img.alt = 'Nome do filme: ' + dados[i].original_title
-               title.innerHTML = dados[i].title
                card.id = dados[i].id
-               botao.id = dados[i].id
+               button.id = dados[i].id
 
                consultarMovie(card.id)
                   .then(movieDetails => {
-                     time.innerHTML = movieDetails.runtime + ' min'
+                     timer.innerHTML = movieDetails.runtime + ' min'
                      const score = movieDetails.vote_average
                      const avaliation = converterStars(score)
-                     estrela.innerHTML = avaliation
                      
                      console.log(movieDetails)
                   })
             }
 
          }
+         Container.append(containerGroup)
 
          document.querySelectorAll('.btn-details').forEach(function(element) {
             element.addEventListener('click', async function() {
@@ -137,6 +170,7 @@ function searchMovie(movie) {
                img.className = 'image'
                h2.className = 'text-title'
                img.src = `https://image.tmdb.org/t/p/w500/${resultado[i].poster_path}`
+               img.alt = 'Imagem não encontrada'
                h2.innerHTML = resultado[i].title
 
                const timer = document.createElement('div')
@@ -187,6 +221,7 @@ function searchMovie(movie) {
 
    const movieName = document.querySelector('.fa-magnifying-glass').addEventListener('click', function(e){
       const input = document.getElementById('inputsearch')
+
       const movieName = input.value.trim() // Remova espaços em branco extras do input
       if (movieName !== "") {
          searchMovie(movieName)
@@ -195,9 +230,25 @@ function searchMovie(movie) {
          const secondMain = document.getElementById('second-main')
          secondMain.classList.remove('display')
          firstMain.classList.add('display')
+         const movieSearched = document.querySelector('.movie-pesquisado')
+         movieSearched.innerHTML = input.value
+         movieSearched.style.color = '#f64348'
+
+         const voltarbtn = document.querySelector('.voltar').addEventListener('click', function() {
+            secondMain.classList.add('display')
+         firstMain.classList.remove('display')
+         input.value = ''
+         input.style.borderColor = '#ffe400'
+         const element = document.querySelector('.fa-magnifying-glass')
+         element.style.backgroundColor = '#ffe400'
+         input.placeholder = 'Buscar por Filmes'
+         })
 
       } else {
          input.style.borderColor = '#f64348'
+         const element = document.querySelector('.fa-magnifying-glass')
+         element.style.backgroundColor = '#f64348'
+         input.placeholder = 'Não é possível pesquisar algo vazio'
       }
       
    })
