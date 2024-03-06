@@ -48,6 +48,7 @@ function getPopularMovies() {
             const button = document.createElement('button')
             button.className = 'btn-details'
             button.innerHTML = 'DETALHES'
+            timer.append(icone, span)
             
             const avaiationDiv = document.createElement('div')
             avaiationDiv.className = 'avaiation'
@@ -56,13 +57,13 @@ function getPopularMovies() {
             avaliationSpan
             const iAvaliation = document.createElement('i')
             iAvaliation.className = 'fa-solid fa-star icone'
-            
+
             const avaliationTime = dados[i].vote_average
             const stars = converterStars(avaliationTime)
             avaliationSpan.innerHTML = stars
             avaiationDiv.append(avaliationSpan, iAvaliation)
 
-            timer.append(icone, span)
+            
             const detailsGroup = document.createElement('div')
             detailsGroup.className = 'details-group'
             detailsGroup.append(timer, button, avaiationDiv)
@@ -80,9 +81,9 @@ function getPopularMovies() {
 
                consultarMovie(card.id)
                   .then(movieDetails => {
-                     timer.innerHTML = movieDetails.runtime + ' min'
                      const score = movieDetails.vote_average
                      const avaliation = converterStars(score)
+                     span.innerHTML = movieDetails.runtime + ' min'
                      
                      console.log(movieDetails)
                   })
@@ -103,6 +104,16 @@ function getPopularMovies() {
                   titulo.innerHTML = data.title
                   const description = document.getElementById('description')
                   description.innerHTML = data.overview
+
+                  const generos = data.genres
+                  let gens = ''
+
+                  for (let i = 0; i < generos.length; i++) {
+                     gens += `<div> ${generos[i].name} </div>`
+                  }
+
+                  const movieGenero = document.getElementById('gens')
+                  movieGenero.innerHTML = gens
 
                   const window = document.querySelector('.details-window')
                   window.classList.remove('display')
@@ -170,7 +181,7 @@ function searchMovie(movie) {
                img.className = 'image'
                h2.className = 'text-title'
                img.src = `https://image.tmdb.org/t/p/w500/${resultado[i].poster_path}`
-               img.alt = 'Imagem não encontrada'
+               img.alt = ' Imagem não encontrada'
                h2.innerHTML = resultado[i].title
 
                const timer = document.createElement('div')
@@ -207,6 +218,11 @@ function searchMovie(movie) {
                card.append(img, h2, detailsGroup)
                Container.append(card)
             }
+
+            const existingContainer = document.querySelector('.container-group');
+            if (existingContainer) {
+               existingContainer.remove(); 
+            }
    
             main.append(Container)
          }
@@ -219,7 +235,7 @@ function searchMovie(movie) {
       })
    }
 
-   const movieName = document.querySelector('.fa-magnifying-glass').addEventListener('click', function(e){
+   const iconsearch = document.querySelector('.fa-magnifying-glass').addEventListener('click', function(e){
       const input = document.getElementById('inputsearch')
 
       const movieName = input.value.trim() // Remova espaços em branco extras do input
@@ -236,12 +252,13 @@ function searchMovie(movie) {
 
          const voltarbtn = document.querySelector('.voltar').addEventListener('click', function() {
             secondMain.classList.add('display')
-         firstMain.classList.remove('display')
-         input.value = ''
-         input.style.borderColor = '#ffe400'
-         const element = document.querySelector('.fa-magnifying-glass')
-         element.style.backgroundColor = '#ffe400'
-         input.placeholder = 'Buscar por Filmes'
+            firstMain.classList.remove('display')
+            input.value = ''
+            input.style.borderColor = '#ffe400'
+            const element = document.querySelector('.fa-magnifying-glass')
+            element.style.backgroundColor = '#ffe400'
+            input.placeholder = 'Buscar por Filmes'
+            window.location.reload()
          })
 
       } else {
@@ -253,4 +270,43 @@ function searchMovie(movie) {
       
    })
 
+
+   document.addEventListener('keypress', function(ev) {
+      const tecla = ev.key
+
+      if (tecla === 'Enter') {
+         const input = document.getElementById('inputsearch')
+
+         const movieName = input.value.trim() // Remova espaços em branco extras do input
+         if (movieName !== "") {
+            searchMovie(movieName)
+   
+            const firstMain = document.getElementById('main-principal')
+            const secondMain = document.getElementById('second-main')
+            secondMain.classList.remove('display')
+            firstMain.classList.add('display')
+            const movieSearched = document.querySelector('.movie-pesquisado')
+            movieSearched.innerHTML = input.value
+            movieSearched.style.color = '#f64348'
+   
+            const voltarbtn = document.querySelector('.voltar').addEventListener('click', function() {
+               secondMain.classList.add('display')
+               firstMain.classList.remove('display')
+               input.value = ''
+               input.style.borderColor = '#ffe400'
+               const element = document.querySelector('.fa-magnifying-glass')
+               element.style.backgroundColor = '#ffe400'
+               input.placeholder = 'Buscar por Filmes'
+               window.location.reload()
+            })
+   
+         } else {
+            input.style.borderColor = '#f64348'
+            const element = document.querySelector('.fa-magnifying-glass')
+            element.style.backgroundColor = '#f64348'
+            input.placeholder = 'Não é possível pesquisar algo vazio'
+         }
+         
+      }
+   })
   
