@@ -194,6 +194,7 @@ function searchMovie(movie) {
                const button = document.createElement('button')
                button.className = 'btn-details'
                button.innerHTML = 'DETALHES'
+               button.id = resultado[i].id
                
                const avaiationDiv = document.createElement('div')
                avaiationDiv.className = 'avaiation'
@@ -226,7 +227,6 @@ function searchMovie(movie) {
    
             main.append(Container)
          }
-        
          
          console.log(resultado)
       })
@@ -269,6 +269,7 @@ function searchMovie(movie) {
       }
       
    })
+   
 
 
    document.addEventListener('keypress', function(ev) {
