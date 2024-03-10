@@ -2,16 +2,17 @@ const apiKey = '53c344e6ba791494d1b35ad0f623a6f7'
 const baseURL = 'https://api.themoviedb.org/3';
 const moveUrl = 'https://api.themoviedb.org/3/search/movie'
 
+function consultarMovie(id) {
+   const endpointOfMovie = `/movie/${id}`;
+   const urlOfMovie = `${baseURL}${endpointOfMovie}?api_key=${apiKey}`;
+
+   return fetch(urlOfMovie).then(response => response.json())
+}
+
+
 function getPopularMovies() {
    const endpoint = '/movie/popular';
    const url = `${baseURL}${endpoint}?api_key=${apiKey}`;
-
-   function consultarMovie(id) {
-      const endpointOfMovie = `/movie/${id}`;
-      const urlOfMovie = `${baseURL}${endpointOfMovie}?api_key=${apiKey}`;
-
-      return fetch(urlOfMovie).then(response => response.json())
-   }
 
    function converterStars(avaliation) {
       const stars = (avaliation * 5) / 10
@@ -99,7 +100,7 @@ function getPopularMovies() {
                try {
                   const data = await consultarMovie(id)
                   const img = document.getElementById('img-detail')
-                  img.src = `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+                  img.src = `https://image.tmdb.org/t/p/w500/${data.backdrop_path}`
                   const titulo = document.getElementById('title-detail')
                   titulo.innerHTML = data.title
                   const description = document.getElementById('description')
@@ -192,8 +193,9 @@ function searchMovie(movie) {
                span.className = 'time-details'
                span.innerHTML = resultado[i].release_date
                const button = document.createElement('button')
-               button.className = 'btn-details'
+               button.className = 'btn-details-2'
                button.innerHTML = 'DETALHES'
+               button.id = resultado[i].id
                
                const avaiationDiv = document.createElement('div')
                avaiationDiv.className = 'avaiation'
@@ -227,6 +229,49 @@ function searchMovie(movie) {
             main.append(Container)
          }
         
+         const button = document.querySelectorAll('.btn-details-2').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+               
+               const window = document.querySelector('.details-window-2')
+
+               if (window.className === 'display') {
+                  alert('oi')
+               }
+
+               const id = btn.id
+
+               try {
+                  const data = await consultarMovie(id)
+                  const img = document.getElementById('img-detail-2')
+                  img.src = `https://image.tmdb.org/t/p/w500/${data.backdrop_path}`
+                  const titulo = document.getElementById('title-detail-2')
+                  titulo.innerHTML = data.title
+                  const description = document.getElementById('description-2')
+                  description.innerHTML = data.overview
+
+                  const generos = data.genres
+                  let gens = ''
+
+                  for (let i = 0; i < generos.length; i++) {
+                     gens += `<div> ${generos[i].name} </div>`
+                  }
+
+                  const movieGenero = document.getElementById('gens-2')
+                  movieGenero.innerHTML = gens
+
+                  const window = document.querySelector('.details-window-2')
+                  window.classList.remove('display-2')
+
+                  document.getElementById('back-icon-2').addEventListener('click', function() {
+                     const window = document.querySelector('.details-window-2')
+                     window.classList.add('display-2')
+                  })
+                  console.log(data.title)
+               } catch {
+                  console.error('Erro ao obter dados do filme:', error)
+               }
+            })
+         })
          
          console.log(resultado)
       })
