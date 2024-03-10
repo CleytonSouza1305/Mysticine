@@ -314,6 +314,7 @@ function searchMovie(movie) {
       }
       
    })
+   
 
 
    document.addEventListener('keypress', function(ev) {
